@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # PostgreSQL + PGVector
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: zhitu-pgvector
+    environment:
+      POSTGRES_DB: zhitu_travel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./docs/pgvector-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: zhitu-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass 123456789
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "123456789", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # RabbitMQ（闪票云需要）
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: flash-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  # Nacos（闪票云需要）
+  nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: flash-nacos
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    environment:
+      MODE: standalone
+      PREFER_HOST_MODE: hostname
+
+volumes:
+  pgvector-data:

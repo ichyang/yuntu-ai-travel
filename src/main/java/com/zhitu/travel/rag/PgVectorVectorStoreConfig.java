@@ -14,8 +14,10 @@ import java.util.List;
 import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgDistanceType.COSINE_DISTANCE;
 import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgIndexType.HNSW;
 
-// 为方便开发调试和部署，临时注释，如果需要使用 PgVector 存储知识库，取消注释即可
-//@Configuration
+// PgVector 向量存储配置（已启用）
+// 需要先启动 PostgreSQL 并创建 zhitu_travel 数据库
+// 首次启动会自动建表（initializeSchema=true）
+@Configuration
 public class PgVectorVectorStoreConfig {
 
     @Resource
