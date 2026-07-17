@@ -8,7 +8,8 @@
 -- ============================================
 
 -- 创建数据库（如未创建）
-CREATE DATABASE zhitu_travel ENCODING 'UTF8';
+-- 注意：docker-compose 已通过 POSTGRES_DB 环境变量自动创建，此处无需重复创建
+-- CREATE DATABASE zhitu_travel ENCODING 'UTF8';
 
 -- 切换到 zhitu_travel 数据库后执行：
 -- \c zhitu_travel

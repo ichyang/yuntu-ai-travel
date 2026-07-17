@@ -1,9 +1,10 @@
 package com.zhitu.travel.rag;
 
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,8 @@ import java.util.List;
 @Configuration
 public class TravelVectorStoreConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(TravelVectorStoreConfig.class);
+
     @Resource
     private TravelDocumentLoader travelDocumentLoader;
 
@@ -29,13 +32,15 @@ public class TravelVectorStoreConfig {
     @Bean
     VectorStore travelVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
-        // 加载文档
-        List<Document> documentList = travelDocumentLoader.loadMarkdowns();
-        // 自主切分文档
-//        List<Document> splitDocuments = myTokenTextSplitter.splitCustomized(documentList);
-        // 自动补充关键词元信息
-        List<Document> enrichedDocuments = myKeywordEnricher.enrichDocuments(documentList);
-        simpleVectorStore.add(enrichedDocuments);
+        try {
+            // 加载文档
+            List<Document> documentList = travelDocumentLoader.loadMarkdowns();
+            // 自动补充关键词元信息
+            List<Document> enrichedDocuments = myKeywordEnricher.enrichDocuments(documentList);
+            simpleVectorStore.add(enrichedDocuments);
+        } catch (Exception e) {
+            log.warn("旅游文档向量化失败（API Key 可能无效），应用仍可正常启动: {}", e.getMessage());
+        }
         return simpleVectorStore;
     }
 }

@@ -1,6 +1,8 @@
 package com.zhitu.travel.rag;
 
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -20,23 +22,36 @@ import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgIndexT
 @Configuration
 public class PgVectorVectorStoreConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(PgVectorVectorStoreConfig.class);
+    private static final int BATCH_SIZE = 20;
+
     @Resource
     private TravelDocumentLoader travelDocumentLoader;
 
     @Bean
     public VectorStore pgVectorVectorStore(JdbcTemplate jdbcTemplate, EmbeddingModel dashscopeEmbeddingModel) {
         VectorStore vectorStore = PgVectorStore.builder(jdbcTemplate, dashscopeEmbeddingModel)
-                .dimensions(1536)                    // Optional: defaults to model dimensions or 1536
-                .distanceType(COSINE_DISTANCE)       // Optional: defaults to COSINE_DISTANCE
-                .indexType(HNSW)                     // Optional: defaults to HNSW
-                .initializeSchema(true)              // Optional: defaults to false
-                .schemaName("public")                // Optional: defaults to "public"
-                .vectorTableName("vector_store")     // Optional: defaults to "vector_store"
-                .maxDocumentBatchSize(10000)         // Optional: defaults to 10000
+                .dimensions(1536)
+                .distanceType(COSINE_DISTANCE)
+                .indexType(HNSW)
+                .initializeSchema(true)
+                .schemaName("public")
+                .vectorTableName("vector_store")
+                .maxDocumentBatchSize(10000)
                 .build();
-        // 加载文档
+        // 加载文档（分批处理，避免 API 限制）
         List<Document> documents = travelDocumentLoader.loadMarkdowns();
-        vectorStore.add(documents);
+        int total = documents.size();
+        for (int i = 0; i < total; i += BATCH_SIZE) {
+            int end = Math.min(i + BATCH_SIZE, total);
+            List<Document> batch = documents.subList(i, end);
+            try {
+                vectorStore.add(batch);
+                log.info("已加载文档 {}/{}", end, total);
+            } catch (Exception e) {
+                log.warn("批量加载文档时出错 ({}/{}): {}", i, total, e.getMessage());
+            }
+        }
         return vectorStore;
     }
 }

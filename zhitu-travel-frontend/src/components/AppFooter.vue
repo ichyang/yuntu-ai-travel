@@ -14,8 +14,8 @@
       <div class="footer-section">
         <h4>友情链接</h4>
         <div class="footer-links">
-          <a href="https://www.mianshiya.com" target="_blank">面试鸭</a>
-          <a href="#" target="_blank">代码小抄</a>
+          <a href="https://github.com/ichyang/yuntu-ai-travel" target="_blank">GitHub 仓库</a>
+          <a href="https://juejin.cn" target="_blank">掘金</a>
         </div>
       </div>
       
