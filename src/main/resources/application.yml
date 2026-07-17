@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   ai:
     dashscope:
-      api-key: your-aliyun-api-key
+      api-key: ${DASHSCOPE_API_KEY:your-aliyun-api-key}
       chat:
         options:
           model: qwen-plus
@@ -67,8 +67,8 @@ knife4j:
     language: zh_cn
 # searchAPI
 search-api:
-  # 需要替换为你自己的 key
-  api-key: your-aliyun-api-key
+  # 需要替换为你自己的 key（建议在 application-local.yml 中配置）
+  api-key: ${SEARCH_API_KEY:your-aliyun-api-key}
 # 修改日志级别，查看 Spring AI 更多调用细节
 logging:
   level:

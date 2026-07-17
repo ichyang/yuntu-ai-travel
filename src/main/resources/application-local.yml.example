@@ -1,0 +1,9 @@
+# 本地开发配置（将本文件复制为 application-local.yml，填入你的 key）
+# application-local.yml 已被 .gitignore 忽略，不会提交到仓库
+spring:
+  ai:
+    dashscope:
+      api-key: sk-你的阿里云百炼API Key
+
+search-api:
+  api-key: 你的搜索API Key（可选）
