@@ -12,7 +12,7 @@ public class TravelContextualQueryAugmenterFactory {
         PromptTemplate emptyContextPromptTemplate = new PromptTemplate("""
                 你应该输出下面的内容：
                 抱歉，我只能回答旅游相关的问题，别的没办法帮到您哦，
-                有问题可以联系编程导航客服 https://codefather.cn
+                如有问题请查看项目文档 https://github.com/ichyang/zhitu-ai-travel
                 """);
         return ContextualQueryAugmenter.builder()
                 .allowEmptyContext(false)

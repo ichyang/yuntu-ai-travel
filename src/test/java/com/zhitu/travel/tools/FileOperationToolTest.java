@@ -10,7 +10,7 @@ class FileOperationToolTest {
     @Test
     void readFile() {
         FileOperationTool fileOperationTool = new FileOperationTool();
-        String fileName = "编程导航.txt";
+        String fileName = "云途智行.txt";
         String result = fileOperationTool.readFile(fileName);
         Assertions.assertNotNull(result);
     }
@@ -18,8 +18,8 @@ class FileOperationToolTest {
     @Test
     void writeFile() {
         FileOperationTool fileOperationTool = new FileOperationTool();
-        String fileName = "编程导航.txt";
-        String content = "https://www.codefather.cn 程序员编程学习交流社区";
+        String fileName = "云途智行.txt";
+        String content = "https://github.com/ichyang/zhitu-ai-travel 云途智行AI出行系统";
         String result = fileOperationTool.writeFile(fileName, content);
         Assertions.assertNotNull(result);
     }
